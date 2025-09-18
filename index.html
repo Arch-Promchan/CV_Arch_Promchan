@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arch Promchan - ICT Student Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .navbar.visible {
+            transform: translateY(0);
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .navbar .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .navbar .nav-links a:hover,
+        .navbar .nav-links a.active {
+            color: #00ffff;
+        }
+
+        .navbar .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #00ffff;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            z-index: 2;
+            position: relative;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            border: 4px solid #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            to { box-shadow: 0 0 50px rgba(0, 255, 255, 0.8); }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ffff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 2rem;
+            opacity: 0;
+            border-right: 2px solid #00ffff;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .skill-category h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .skill-list li:last-child {
+            border-bottom: none;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .project-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(0, 255, 255, 0.3);
+        }
+
+        .project-card h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .project-card p {
+            margin-bottom: 1rem;
+            color: #cccccc;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .project-link {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .education-content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .education-content h3 {
+            color: #00ffff;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .education-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .detail-item h4 {
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .navbar .nav-links {
+                gap: 1rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="logo">Arch Promchan</div>
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#education" class="nav-link">Education</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero">
+        <canvas class="particles-canvas" id="particles"></canvas>
+        <div class="hero-content">
+            <div class="profile-image">
+                <img src="https://drive.google.com/thumbnail?id=1qKOtodaUguku85q_RyCgLpwxJGl14Gv8&sz=s800" alt="Arch Promchan">
+            </div>
+            <h1 id="name">ARCH PROMCHAN</h1>
+            <div class="subtitle" id="subtitle"></div>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>Arch.Promchan@Student.Lab.Fi</span>
+                </div>
+                <div class="contact-item">
+                    <span>📱</span>
+                    <span>0417216952</span>
+                </div>
+                <div class="contact-item">
+                    <span>📍</span>
+                    <span>Lappeenranta, Finland</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="section">
+        <h2 class="section-title">Skills & Expertise</h2>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h3>Technical Skills</h3>
+                <ul class="skill-list">
+                    <li><strong>Programming:</strong> Python, JavaScript</li>
+                    <li><strong>Web Technologies:</strong> HTML, CSS</li>
+                    <li><strong>Tools:</strong> Git, Visual Studio Code</li>
+                    <li><strong>Databases:</strong> SQL & Database Management</li>
+                    <li><strong>IoT & Embedded:</strong> Raspberry Pi</li>
+                    <li><strong>Cloud:</strong> Azure, GitHub Pages</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <h3>Soft Skills</h3>
+                <ul class="skill-list">
+                    <li>Team Collaboration (Project-based Learning)</li>
+                    <li>Cross-cultural Communication</li>
+                    <li>Adaptability in International Settings</li>
+                    <li>Time Management & Task Ownership</li>
+                    <li>Problem-solving & Critical Thinking</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <h3>Languages</h3>
+                <ul class="skill-list">
+                    <li><strong>Thai:</strong> Native</li>
+                    <li><strong>English:</strong> B2 Level</li>
+                    <li><strong>Finnish:</strong> A1 Level</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <h2 class="section-title">Project Experience</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <h3>SmartGym Web Application</h3>
+                <p><strong>Role:</strong> Frontend Developer</p>
+                <p>Group project to develop a smart fitness tracking platform. I worked on UI and frontend logic, creating an intuitive interface for users to track their workouts and progress.</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">HTML</span>
+                    <span class="tech-tag">CSS</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Azure</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/Puripun8900/Group-M/tree/frontend" class="project-link" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://smartgym-m.azurewebsites.net/" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i> Live Site</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>Finnish Language Centre</h3>
+                <p><strong>Role:</strong> Frontend Developer</p>
+                <p>Built a learning platform focused on Finnish listening skills. Integrated audio exercises (47 mp3 files) with interactive modules and responsive UI to help students improve their language skills.</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">HTML</span>
+                    <span class="tech-tag">CSS</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">GitHub Pages</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/Arch-Promchan/Language-Centre/tree/frontend" class="project-link" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://arch-promchan.github.io/Language-Centre/" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i> Live Site</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>Smart Home IoT System</h3>
+                <p><strong>Role:</strong> Frontend Developer</p>
+                <p>IoT-based smart home automation system. I developed the web front-end to display real-time temperature and humidity data and provide intuitive light control interfaces.</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">HTML</span>
+                    <span class="tech-tag">CSS</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Azure</span>
+                    <span class="tech-tag">Raspberry Pi Pico</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/FojeVladLAB/SmartHomeM" class="project-link" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://www.youtube.com/watch?v=u6mB-XyD8iE" class="project-link" target="_blank"><i class="fab fa-youtube"></i> Video</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>VApp – Otaku Picks Blog</h3>
+                <p><strong>Role:</strong> Frontend / Blog Designer</p>
+                <p>Designed and deployed a WordPress-based anime recommendation blog as part of a conceptual internet service project. Customized layout, created engaging posts, and integrated multimedia content.</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">WordPress</span>
+                    <span class="tech-tag">Blogging Tools</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://www.youtube.com/watch?v=jzhFbgWZ3Ls" class="project-link" target="_blank"><i class="fab fa-youtube"></i> Video</a>
+                    <a href="https://otakupicks.wordpress.com/2025/04/25/sword-art-online/" class="project-link" target="_blank"><i class="fas fa-blog"></i> Visit Blog</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education" class="section">
+        <h2 class="section-title">Education</h2>
+        <div class="education-content">
+            <h3>LAB University of Applied Sciences</h3>
+            <p><strong>Bachelor's Degree Program in Industrial Information Technology</strong></p>
+            <p><strong>Duration:</strong> 2023–2027 (Ongoing)</p>
+            
+            <div class="education-details">
+                <div class="detail-item">
+                    <h4>Progress</h4>
+                    <p>Completed: 219 credits</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Key Courses</h4>
+                    <p>Embedded Systems, Introduction to IoT, SQL & Databases, Virtualization: Networks and Security, Introduction to AI, Robotics, Designing IoT Pipeline</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Focus Areas</h4>
+                    <p>Industrial IT, IoT systems, database management, AI applications, and embedded programming</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        class ParticleSystem {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.resize();
+                this.createParticles();
+                this.animate();
+                
+                window.addEventListener('resize', () => this.resize());
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createParticles() {
+                const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 15000);
+                for (let i = 0; i < particleCount; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        size: Math.random() * 2 + 1,
+                        opacity: Math.random() * 0.5 + 0.2
+                    });
+                }
+            }
+            
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+                    if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(0, 255, 255, ${particle.opacity})`;
+                    this.ctx.fill();
+                });
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.style.width = '0';
+            element.style.animation = 'none';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    element.style.width = (i + 1) * 0.6 + 'em';
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    setTimeout(() => {
+                        element.style.borderRight = 'none';
+                    }, 1000);
+                }
+            }
+            type();
+        }
+
+        function smoothScroll(target) {
+            const element = document.querySelector(target);
+            const offsetTop = element.offsetTop - 80;
+            
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        function updateActiveNavLink() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize particle system
+            const particlesCanvas = document.getElementById('particles');
+            new ParticleSystem(particlesCanvas);
+            
+            setTimeout(() => {
+                const subtitle = document.getElementById('subtitle');
+                typeWriter(subtitle, 'ICT STUDENT', 150);
+            }, 1500);
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('href');
+                    smoothScroll(target);
+                });
+            });
+            
+            const navbar = document.getElementById('navbar');
+            let lastScrollY = window.scrollY;
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    navbar.classList.add('visible');
+                } else {
+                    navbar.classList.remove('visible');
+                }
+                
+                updateActiveNavLink();
+                
+                // Animate project cards on scroll
+                const projectCards = document.querySelectorAll('.project-card');
+                projectCards.forEach(card => {
+                    const cardTop = card.getBoundingClientRect().top;
+                    const cardVisible = cardTop < window.innerHeight - 100;
+                    
+                    if (cardVisible) {
+                        card.classList.add('visible');
+                    }
+                });
+                
+                lastScrollY = window.scrollY;
+            });
+            
+            // Initial call to set active nav link
+            updateActiveNavLink();
+        });
+    </script>
+</body>
+</html>
